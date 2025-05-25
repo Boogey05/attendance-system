@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export async function GET(request) {
   try {
@@ -99,7 +97,5 @@ export async function GET(request) {
   } catch (error) {
     console.error('Error fetching attendance data:', error);
     return NextResponse.json({ error: 'Failed to fetch attendance data' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 } 
