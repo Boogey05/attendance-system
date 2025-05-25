@@ -1,0 +1,101 @@
+generator client {
+     provider = "prisma-client-js"
+   }
+
+   datasource db {
+     provider = "postgresql"
+     url      = env("DATABASE_URL")
+   }
+
+   enum Role {
+     STUDENT
+     ADMIN
+   }
+
+   enum FacultyRole {
+     HEAD
+     FACULTY
+   }
+
+   model User {
+     id            String      @id @default(uuid())
+     userId        String      @unique
+     password      String
+     role          Role        @default(STUDENT)
+     name          String
+     department    String
+     year          String?
+     email         String?
+     phone         String?
+     address       String?
+     emergencyContact String?
+     semester      String?
+     program       String?
+     attendance    Attendance[]
+     createdAt     DateTime    @default(now())
+     updatedAt     DateTime    @updatedAt
+   }
+
+   model Instructor {
+     id            String      @id @default(uuid())
+     userId        String      @unique
+     password      String
+     name          String
+     department    String
+     facultyRole   FacultyRole
+     email         String?
+     phone         String?
+     address       String?
+     profilePicture String?    // URL to profile picture
+     qualification String?     // Academic qualification
+     specialization String?    // Area of specialization
+     officeNumber  String?     // Office room number
+     modules       String[]
+     attendance    Attendance[]
+     createdAt     DateTime    @default(now())
+     updatedAt     DateTime    @updatedAt
+   }
+
+   model Module {
+     id            String      @id @default(uuid())
+     code          String      @unique
+     name          String
+     department    String
+     year          String
+     semester      String
+     credits       Int
+     description   String?
+     totalClasses  Int         @default(0)
+     requirement   Int         @default(75)
+     attendance    Attendance[]
+     createdAt     DateTime    @default(now())
+     updatedAt     DateTime    @updatedAt
+   }
+
+   model Attendance {
+     id            String      @id @default(uuid())
+     studentId     String
+     student       User        @relation(fields: [studentId], references: [id])
+     instructorId  String?
+     instructor    Instructor? @relation(fields: [instructorId], references: [id])
+     moduleId      String
+     module        Module      @relation(fields: [moduleId], references: [id])
+     date          DateTime
+     present       Int
+     absent        Int
+     time          String
+     markedBy      String
+     createdAt     DateTime    @default(now())
+     updatedAt     DateTime    @updatedAt
+   }
+
+   model Admin {
+     id            String      @id @default(uuid())
+     userId        String      @unique
+     password      String
+     name          String
+     email         String?
+     phone         String?
+     createdAt     DateTime    @default(now())
+     updatedAt     DateTime    @updatedAt
+   }
